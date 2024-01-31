@@ -4,6 +4,23 @@
 const flights =
   '_Delayed_Departure;fao93766109;txl2133758440;11:25+_Arrival;bru0943384722;fao93766109;11:45+_Delayed_Arrival;hel7439299980;fao93766109;12:05+_Departure;fao93766109;lis2323639855;12:30';
 
+const flightsData = flights.split('+');
+const getCode = str => str.slice(0, 3).toUpperCase()
+for (const data of flightsData) {
+  let [type, from, to, time] = data.split(';');
+  // format type
+  type = type.slice(1, type.length + 1).replace('_', ' ');
+  if (type.includes('Delayed')) type = `🔴 ` + type;
+  // format from
+  from = getCode(from).toUpperCase();
+  // format to
+  to = getCode(to).toUpperCase();
+  // format time
+  time = time.replace(':', 'h');
+  // log everything
+  console.log(`${type} from ${from} to ${to} (${time})`.padStart(44));
+}
+
 const weekdays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
 // Enhanced object litrals
@@ -63,41 +80,60 @@ const restaurant = {
   },
 };
 
-const ordersSet = new Set([
-  'Pasta',
-  'Pizza',
-  'Pizza',
-  'Risotto',
-  'Pasta',
-  'Pizza',
-]);
-console.log(ordersSet); // Set(3) {'Pasta', 'Pizza', 'Risotto'}
-console.log(new Set('Jonas')); // Set(5) {'J', 'o', 'n', 'a', 's'}
+// Split and join
+console.log('a+very+nice+string'.split('+')); // ["a","very","nice","string"]
+console.log('Jonas Schmedtmann'.split(' ')); //  ['Jonas', 'Schmedtmann']
 
-console.log(ordersSet.size); // how many different...
-console.log(ordersSet.has('Pizza')); // true
-console.log(ordersSet.has('Bread')); // false
+const [firstName, lastName] = 'Jonas Schmedtmann'.split(' ');
+console.log(firstName, lastName);
 
-ordersSet.add('Garlic Bread');
-ordersSet.add('Garlic Bread');
-console.log(ordersSet); // Set(4) {'Pasta', 'Pizza', 'Risotto', 'Garlic Bread'}
+const newName = ['Mr.', firstName, lastName.toUpperCase()].join(' '); // Mr. Jonas SCHMEDTMANN
+console.log(newName);
 
-ordersSet.delete('Risotto');
-console.log(ordersSet); // Set(3) {'Pasta', 'Pizza', 'Garlic Bread'}
+const capitalizeName = function (name) {
+  const names = name.split(' ');
+  const namesUpper = [];
 
-for (const order of ordersSet) {
-  console.log(order);
-}
+  for (const n of names) {
+    // namesUpper.push(n[0].toUpperCase() + n.slice(1));
+    namesUpper.push(n.replace(n[0], n[0].toUpperCase()));
+  }
 
-const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
-const staffUnique = [...new Set(staff)]; // create array from set
-console.log(staffUnique); // (3) ['Waiter', 'Chef', 'Manager']
+  console.log(namesUpper.join(' '));
+};
 
-// unique letters in a string
-console.log(new Set('jonasschmedtmann').size);
+capitalizeName('jessica ann smith davis');
+capitalizeName('jonas schmedtmann');
 
-// ordersSet.clear();
-// console.log(ordersSet);
+// Padding a string
+const message = 'Go to gate 23!';
+console.log(message.padStart(25, '+')); // +++++++++++Go to gate 23!
+console.log(message.padStart(25, '+').padEnd(35, '+')); // +++++++++++Go to gate 23!++++++++++
+
+// example - use case:
+const maskCreditCard = function (number) {
+  // const str = String(number);
+  const str = number + '';
+
+  const last = str.slice(-4);
+  return last.padStart(str.length, '*');
+};
+
+console.log(maskCreditCard(445645875132456489)); // **************6500
+console.log(maskCreditCard('85642135648796312')); // *************6312
+
+// Repeat
+const message2 = 'Bad weather... All Departures Delayed... ';
+console.log(message2.repeat(5));
+
+const planesInLine = function (n) {
+  console.log(`There are ${n} planes in line ${`✈️`.repeat(n)}`);
+};
+
+planesInLine(5);
+planesInLine(3);
+planesInLine(12);
+
 /*
 const arr = [2, 3, 4];
 const a = arr[0];
@@ -381,6 +417,229 @@ const entries = Object.entries(openingHours);
 for (const [key, { open, close }] of entries) {
   console.log(`On ${key} we open at ${open} and close at ${close}`);
 }
+
+// sets
+const ordersSet = new Set([
+  'Pasta',
+  'Pizza',
+  'Pizza',
+  'Risotto',
+  'Pasta',
+  'Pizza',
+]);
+console.log(ordersSet); // Set(3) {'Pasta', 'Pizza', 'Risotto'}
+console.log(new Set('Jonas')); // Set(5) {'J', 'o', 'n', 'a', 's'}
+
+console.log(ordersSet.size); // how many different...
+console.log(ordersSet.has('Pizza')); // true
+console.log(ordersSet.has('Bread')); // false
+
+ordersSet.add('Garlic Bread');
+ordersSet.add('Garlic Bread');
+console.log(ordersSet); // Set(4) {'Pasta', 'Pizza', 'Risotto', 'Garlic Bread'}
+
+ordersSet.delete('Risotto');
+console.log(ordersSet); // Set(3) {'Pasta', 'Pizza', 'Garlic Bread'}
+
+for (const order of ordersSet) {
+  console.log(order);
+}
+
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+const staffUnique = [...new Set(staff)]; // create array from set
+console.log(staffUnique); // (3) ['Waiter', 'Chef', 'Manager']
+
+// unique letters in a string
+console.log(new Set('jonasschmedtmann').size);
+
+// Maps
+const rest = new Map();
+// set to add elements
+rest.set('name', 'Classico Italiano');
+rest.set(1, 'Firenze, Italy');
+console.log(rest.set(2, 'Lisbon, Portugal')); // returns map
+
+// we can chain set
+rest
+  .set('categories', ['Italian', 'Pizzeria', 'Vegetarian', 'Organic'])
+  .set('open', 11)
+  .set('close', 23)
+  .set(true, 'We are open :D')
+  .set(false, 'We are closed :(');
+
+// read data
+console.log(rest.get('name')); // Classico Italiano
+console.log(rest.get(true)); // We are open :D
+console.log(rest.get(1));
+
+// example
+const time = 21;
+console.log(rest.get(time > rest.get('open') && time < rest.get('close')));
+
+// check if has a key
+console.log(rest.has('categories')); // true
+
+// delete elements
+rest.delete(2);
+console.log(rest);
+
+// length
+console.log(rest.size);
+
+// clear map
+// rest.clear()
+// console.log(rest);
+
+// array as key
+rest.set([1,2], 'Test');
+console.log(rest.get([1,2])); // doesn't work, not the same element, the key is the address in memory
+rest.set(document.querySelector('h1'), 'Heading');
+
+const arr = [1,2];
+rest.set(arr, 'Test');
+console.log(rest.get(arr));
+
+// Maps
+console.log(question);
+
+// Convert object to map
+console.log(Object.entries(openingHours));
+const hoursMap = new Map(Object.entries(openingHours));
+console.log(hoursMap);
+
+// Iteration
+console.log(question.get('question'));
+for (const [key, value] of question) {
+  if (typeof key === 'number') console.log(`Answer ${key}: ${value}`);
+}
+// const answer = Number(prompt('Your answer'));
+let answer = 2;
+console.log(answer);
+const isCorrect = answer === question.get('correct');
+console.log(question.get(isCorrect));
+
+// Convert map to array
+console.log([...question]);
+// ordersSet.clear();
+// console.log(ordersSet);
+
+
+const question = new Map([
+  ['question', 'What is the best programming language in the world?'],
+  [1, 'C'],
+  [2, 'Java'],
+  [3, 'JavaScript'],
+  ['correct', 3],
+  [true, 'Correct🎉'],
+  [false, 'Try again!'],
+]);
+
+
+// Working with strings 
+
+const airline = 'TAP Air Portugal';
+const plane = 'A320';
+
+// access char
+console.log(plane[0]); // A
+console.log(plane[1]); // 3
+console.log(plane[2]); // 2
+console.log('B737'[0]); // B
+
+// length
+console.log(airline.length); // 16
+console.log('B737'.length); // 4
+
+// index of char
+console.log(airline.indexOf('r')); // 6
+console.log(airline.lastIndexOf('r')); // 10
+console.log(airline.indexOf('portugal')); // -1
+
+// slice
+console.log(airline.slice(4)); // Air Portugal
+console.log(airline.slice(4, 7)); // Air
+
+console.log(airline.slice(0, airline.indexOf(' '))); // TAP
+console.log(airline.slice(airline.lastIndexOf(' ') + 1)); // Portugal
+
+console.log(airline.slice(-2)); // al
+console.log(airline.slice(1, -1)); // AP Air Portuga
+
+const checkMiddleSeat = function(seat) {
+  //B and E are middle seats
+  const s = seat.slice(-1);
+  if(s === 'B' || s === 'E')
+    console.log('You got the middle seat 😬');
+  else
+    console.log('You got lucky 😎');
+}
+
+checkMiddleSeat('11B');
+checkMiddleSeat('23C');
+checkMiddleSeat('3E');
+
+console.log(new String('jonas')); // String {'jonas'}
+console.log(typeof new String('jonas')); // object
+console.log(typeof new String('jonas').slice(1)); // string
+
+const airline = 'TAP Air Portugal';
+console.log(airline.toLowerCase()); // tap air portugal
+console.log(airline.toUpperCase()); // TAP AIR PORTUGAL
+
+// Example - fix capitalization
+const passeger = 'jOnAS';
+const passengerLower = passeger.toLowerCase();
+const passengerCorrect =
+  passengerLower[0].toUpperCase() + passengerLower.slice(1);
+console.log(passengerCorrect);
+
+// Comparing emails
+const email = 'hello@jonas.io';
+const loginEmail = '  Hello@Jonas.Io  \n';
+
+// const lowerEmail = loginEmail.toLowerCase();
+// const trimmedEmail = lowerEmail.trim();
+// console.log(trimmedEmail);
+
+const normalizedEmail = loginEmail.toLowerCase().trim();
+console.log(normalizedEmail);
+console.log(email === normalizedEmail);
+
+// replacing
+const priceGB = '288,97£';
+const priceUS = priceGB.replace('£', '$').replace(',', '.');
+console.log(priceUS);
+
+const announcement =
+  'All passengers come to boarding door 23. Boarding door 23!';
+console.log(announcement.replace('door', 'gate'));
+console.log(announcement.replaceAll('door', 'gate'));
+console.log(announcement.replaceAll(/door/g, 'gate')); // /g for global
+
+// Booleans
+const plane = 'Airbus A320neo';
+console.log(plane.includes('A320')); // true
+console.log(plane.includes('Boeing')); // false
+
+console.log(plane.startsWith('Airb')); // true
+
+if (plane.startsWith('Airbus') && plane.endsWith('neo')) {
+  console.log('Part of the NEW Airbus family');
+}
+
+// Practice
+const checkBaggage = function (items) {
+  const bagagge = items.toLowerCase();
+  if (bagagge.includes('knife') || bagagge.includes('gun')) {
+    console.log('You are NOT allowed on board');
+  } else {
+    console.log('Welcome aboard!');
+  }
+};
+
+checkBaggage('I have a laptop, some Food and a pocket Knife');
+checkBaggage('Sock and camera');
+checkBaggage('Got some snacks and a gun for protection');
 
 
 */

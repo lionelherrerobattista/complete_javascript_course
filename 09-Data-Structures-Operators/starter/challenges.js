@@ -1,3 +1,4 @@
+'use strict';
 /*
 Coding Challenge #1
 
@@ -180,10 +181,8 @@ Get the team names directly from the game object, don't hardcode them
 same property names 😉
 */
 for (const [team, odd] of Object.entries(game.odds)) {
-  let teamStr = game?.[team] ? 'victory ' + game?.[team] : 'draw'
-  console.log(
-    `Odd of ${teamStr}: ${odd}`
-  );
+  let teamStr = game?.[team] ? 'victory ' + game?.[team] : 'draw';
+  console.log(`Odd of ${teamStr}: ${odd}`);
 }
 
 /*
@@ -201,3 +200,138 @@ for (const player of game.scored) {
   scorers[player] ? scorers[player]++ : (scorers[player] = 1);
 }
 console.log(scorers);
+
+/*
+Coding Challenge #3
+Let's continue with our football betting app! This time, we have a map called 
+'gameEvents' (see below) with a log of the events that happened during the 
+game. The values are the events themselves, and the keys are the minutes in which 
+each event happened (a football game has 90 minutes plus some extra time).
+Your tasks:
+1. Create an array 'events' of the different game events that happened (no 
+duplicates)
+2. After the game has finished, is was found that the yellow card from minute 64 
+was unfair. So remove this event from the game events log.
+3. Compute and log the following string to the console: "An event happened, on 
+average, every 9 minutes" (keep in mind that a game has 90 minutes)
+4. Loop over 'gameEvents' and log each element to the console, marking 
+whether it's in the first half or second half (after 45 min) of the game, like this:
+[FIRST HALF] 17: ⚽ GOAL
+GOOD LUCK 
+*/
+
+const gameEvents = new Map([
+  [17, '⚽ GOAL'],
+  [36, '🔄️ Substitution'],
+  [47, '⚽ GOAL'],
+  [61, '🔄️ Substitution'],
+  [64, '🟡 Yellow card'],
+  [69, '🔴 Red card'],
+  [70, '🔄️ Substitution'],
+  [72, '🔄️ Substitution'],
+  [76, '⚽ GOAL'],
+  [80, '⚽ GOAL'],
+  [92, '🟡 Yellow card'],
+]);
+
+/*
+1. Create an array 'events' of the different game events that happened (no 
+  duplicates)
+*/
+const events = [...new Set(gameEvents.values())];
+console.log(events);
+
+/*
+2. After the game has finished, is was found that the yellow card from minute 64 
+was unfair. So remove this event from the game events log.
+*/ gameEvents.delete(64);
+console.log(gameEvents);
+
+/*
+3. Compute and log the following string to the console: "An event happened, on 
+average, every 9 minutes" (keep in mind that a game has 90 minutes)
+*/
+let averageEvent = 90 / gameEvents.size;
+console.log(`An event happened, on average, every ${averageEvent} minutes`);
+
+/*
+4. Loop over 'gameEvents' and log each element to the console, marking 
+whether it's in the first half or second half (after 45 min) of the game, like this:
+[FIRST HALF] 17: ⚽ GOAL
+*/
+for (const [minute, event] of gameEvents) {
+  let half = minute <= 45 ? '[FIRST HALF]' : '[SECOND HALF]';
+
+  console.log(`${half} ${minute}: ${event}`);
+}
+
+/*
+Coding Challenge #4
+
+Write a program that receives a list of variable names written in underscore_case 
+and convert them to camelCase.
+
+The input will come from a textarea inserted into the DOM (see code below to 
+insert the elements), and conversion will happen when the button is pressed.
+
+Test data (pasted to textarea, including spaces):
+  underscore_case
+  first_name
+  Some_Variable 
+   calculate_AGE
+  delayed_departure
+
+Should produce this output (5 separate console.log outputs):
+underscoreCase    ✅
+firstName         ✅✅
+someVariable      ✅✅✅
+calculateAge      ✅✅✅✅
+delayedDeparture  ✅✅✅✅✅
+
+Hints:
+§ Remember which character defines a new line in the textarea �
+§ The solution only needs to work for a variable made out of 2 words, like a_b
+§ Start without worrying about the ✅. Tackle that only after you have the variable 
+name conversion working �
+§ This challenge is difficult on purpose, so start watching the solution in case 
+you're stuck. Then pause and continue!
+Afterwards, test with your own test data!
+GOOD LUCK 
+*/
+document.body.append(document.createElement('textarea'));
+document.body.append(document.createElement('button'));
+
+// get elements
+const textarea = document.querySelector('textarea');
+const button = document.querySelector('button');
+
+const convertToCamelCase = function () {
+  // get text from textarea
+  // split variable names (new line)
+  const variables = textarea.value.split('\n');
+  const variablesCamelCase = [];
+
+  for (const variable of variables) {
+    // split variable names (underscore)
+    const [firstWord, secondWord] = variable.trim().toLowerCase().split('_');
+    // capitalize first letter second word
+    // join variable names
+    const camelCase =
+      firstWord +
+      secondWord.replace(secondWord[0], secondWord[0].toUpperCase());
+    variablesCamelCase.push(camelCase);
+  }
+
+  for (const variable of variablesCamelCase) {
+    // add padding
+    // add tick emoji and repeat
+    let str = `${variable.padEnd(20, ' ')} ${`✅`.repeat(
+      variablesCamelCase.indexOf(variable) + 1
+    )}`;
+    // log to console
+    console.log(str);
+  }
+};
+
+// append function to button
+button.addEventListener('click', convertToCamelCase);
